@@ -72,7 +72,7 @@ main {
   justify-content: flex-start;
 }
 .categories .category {
-  margin: 0 0.5rem 0 0;
+  margin: 0 0.5rem 0.5rem 0;
   display: block;
   color: var(--gray-4);
   background: var(--white-2);
@@ -169,20 +169,25 @@ main {
 .content div,
 .content div pre,
 .content div pre code {
-  overflow-x: hidden !important;
+  overflow-wrap: anywhere;
 }
 
 .content pre {
   background: var(--gray-3) !important;
-  padding: 1rem 2rem;
+  padding: 0.2rem 0.5rem;
   margin-bottom: 1.75rem;
 }
 
 .content code {
+  font-size: 0.8rem;
   padding: 3px 5px;
   color: var(--white-2);
-  white-space: pre;
   background-color: var(--gray-3);
+  white-space: pre-wrap;       /* Since CSS 2.1 */
+  white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+  white-space: -pre-wrap;      /* Opera 4-6 */
+  white-space: -o-pre-wrap;    /* Opera 7 */
+  word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
 
 /* lbox */

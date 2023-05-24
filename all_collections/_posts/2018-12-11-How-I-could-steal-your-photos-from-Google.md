@@ -41,7 +41,7 @@ I started playing with this parameter and it wasn't hard to figure out that if I
 Okay, so if it works like writing email addresses, then let's see what happens if I specify a name:
 
 
-*https://docs.google.com/spreadsheets/d/cmFuZG9t_c3ByZWFkc2hlZXQ_aWQ/edit?usp=sharing_erp&userstoinvite=Bill Gates&lt;billgates@microsoft.com&gt;*
+*https://docs.google.com/spreadsheets/d/cmFuZG9t_c3ByZWFkc2hlZXQ_aWQ/edit?usp=sharing_erp&userstoinvite=Bill&nbsp;Gates&lt;billgates@microsoft.com&gt;*
 
 It worked as I expected - the name was shown in the form instead of the address and the real email address behind the name was only displayed if you moved your mouse over it.
 
@@ -76,13 +76,13 @@ My strategy was simple
 
 ```js
 for webapp in google_webapps:
-    devtools.open()
-    devtools.select_tab('network')
-    for button in webapp:
-        button.click()
-    for request, response in devtools.network_tab:
-        request.analyze_manually()
-        response.analyze_manually()
+  devtools.open()
+  devtools.select_tab('network')
+  for button in webapp:
+    button.click()
+  for request, response in network_tab:
+    request.analyze_manually()
+    response.analyze_manually()
 ```
 
 Also, it was long and boring. I spent afternoons and nights reading the requests and responses without success. I don't even remember how many different things I'd tried: 
@@ -101,25 +101,15 @@ I focused on Drive and the Google Docs family because:
 The first thing I observed is Slides is similar to Docs and Sheets, but it uses a different (*legacy?*) API in some cases. For example, inserting an image from my drive triggered these requests:
 
 ```bash
-curl 'https://docs.google.com/presentation/d/
-pReS3nTaT10N_1D/copyimages?
-id=bG9s_Y2hlY2tvdXR0aGlz_dDY4UkV1MEh3Qnc' 
---data 'photo=bG9s_Y2hlY2tvdXR0aGlz_dDY4UkV1MEh3Qnc'
+curl 'https://docs.google.com/presentation/d/pReS3nTaT10N_1D/copyimages?id=bG9s_Y2hlY2tvdXR0aGlz_dDY4UkV1MEh3Qnc' --data 'photo=bG9s_Y2hlY2tvdXR0aGlz_dDY4UkV1MEh3Qnc'
 
-{"bG9s_Y2hlY2tvdXR0aGlz_dDY4UkV1MEh3Qnc": 
-"MDRjYWVhO-QtYjc0Ny00NDdkLWJlODctZ-VmNzVkOTI1YTkw"}
+{"bG9s_Y2hlY2tvdXR0aGlz_dDY4UkV1MEh3Qnc": "MDRjYWVhO-QtYjc0Ny00NDdkLWJlODctZ-VmNzVkOTI1YTkw"}
 ```
 
 ```bash
-curl 'https://docs.google.com/presentation/d/
-pReS3nTaT10N_1D/renderdata?
-id=bG9s_Y2hlY2tvdXR0aGlz_dDY4UkV1MEh3Qnc' 
---data 'cosmoId=MDRjYWVhO-QtYjc0Ny00NDdkLWJlODctZ-
-VmNzVkOTI1YTkw'
+curl 'https://docs.google.com/presentation/d/pReS3nTaT10N_1D/renderdata?id=bG9s_Y2hlY2tvdXR0aGlz_dDY4UkV1MEh3Qnc' --data 'cosmoId=MDRjYWVhO-QtYjc0Ny00NDdkLWJlODctZ-VmNzVkOTI1YTkw'
 
-{"r0":"https://lh6.googleusercontent.com/dmVyeXZlcnl2ZXJ5dmVy
-eXZlcnl2ZXJ5dmVyeXZlcnl2ZXJ5dmVyeXZlcnl2ZXJ5dmVyeXZlcnl2ZXJ5d
-mVyeXZlcnl2ZXJ5dmVyeXZlcnl2ZXJ5bG9uZ3N0cmluZw"}
+{"r0": "https://lh6.googleusercontent.com/dmVyeXZlcnl2ZXJ5dmVyeXZlcnl2ZXJ5dmVyeXZlcnl2ZXJ5dmVyeXZlcnl2ZXJ5dmVyeXZlcnl2ZXJ5dmVyeXZlcnl2ZXJ5dmVyeXZlcnl2ZXJ5bG9uZ3N0cmluZw"}
 ```
 
 Notice that the first response basically contains `"ID_OF_THE_IMAGE": "SOME_RANDOM_ID"`, and `"SOME_RANDOM_ID"` appears in the second request as the value of `cosmoId`. Also, the second response contains a direct link to the image.
@@ -149,21 +139,11 @@ The size of the popup prevented me from seeing the whole URL, so I copied it to 
 
 *// URL before login*
 
-*https://accounts.google.com/signin/v2/sl/pwd?
-passive=801337085&osid=1&continue=https%3A%2F%2F
-photos.google.com%2Finitps%3Frequest%3DW1tudWxsL
-CIxMjU4NzQyNzU5MTIzOSJdLG51bGwsImUtbWFpbEBleGFtc
-GxlLmNvbSIsbnVsbCxbMixudWxsLCJXVzkxSUhKbFlXeHNlU
-0JzYVd0bElfR1JsWTI5a2FXNW5JSEpoYm1SdmJTQmlZWE5sT
-mpRZ2MzX1J5YVc1bmN5QXRJR1J2YmlkMElIbHZkVDgiXV0`.`*
+*https://accounts.google.com/signin/v2/sl/pwd?passive=801337085&osid=1&continue=https%3A%2F%2Fphotos.google.com%2Finitps%3Frequest%3DW1tudWxsLCIxMjU4NzQyNzU5MTIzOSJdLG51bGwsImUtbWFpbEBleGFtcGxlLmNvbSIsbnVsbCxbMixudWxsLCJXVzkxSUhKbFlXeHNlU0JzYVd0bElfR1JsWTI5a2FXNW5JSEpoYm1SdmJTQmlZWE5sTmpRZ2MzX1J5YVc1bmN5QXRJR1J2YmlkMElIbHZkVDgiXV0`.`*
 
 *// URL after login*
 
-*https://photos.google.com/initps?request=W1tudWx
-sLCIxMjU4NzQyNzU5MTIzOSJdLG51bGwsImUtbWFpbEBleGFt
-cGxlLmNvbSIsbnVsbCxbMixudWxsLCJXVzkxSUhKbFlXeHNlU
-0JzYVd0bElfR1JsWTI5a2FXNW5JSEpoYm1SdmJTQmlZWE5sTm
-pRZ2MzX1J5YVc1bmN5QXRJR1J2YmlkMElIbHZkVDgiXV0`.`*
+*https://photos.google.com/initps?request=W1tudWxsLCIxMjU4NzQyNzU5MTIzOSJdLG51bGwsImUtbWFpbEBleGFtcGxlLmNvbSIsbnVsbCxbMixudWxsLCJXVzkxSUhKbFlXeHNlU0JzYVd0bElfR1JsWTI5a2FXNW5JSEpoYm1SdmJTQmlZWE5sTmpRZ2MzX1J5YVc1bmN5QXRJR1J2YmlkMElIbHZkVDgiXV0`.`*
 
 It was clear that the `continue` parameter contained the second URL encoded, but the value of `request` - at first glance - was just a bunch of random characters and a dot at the end. 
 
